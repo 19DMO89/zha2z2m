@@ -1,0 +1,33 @@
+export:
+disable_zha:
+enable_zha:
+migrate_device:
+  fields:
+    z2m_device_id:
+      required: true
+      selector:
+        device:
+          integration: mqtt
+    zha_ieee:
+      example: "00:15:8d:00:01:23:45:67"
+      selector:
+        text:
+    preserve_names:
+      default: true
+      selector:
+        boolean:
+    copy_areas:
+      default: true
+      selector:
+        boolean:
+auto_migrate:
+  fields:
+    preserve_names:
+      default: true
+      selector:
+        boolean:
+    copy_areas:
+      default: true
+      selector:
+        boolean:
+replace_device_references:

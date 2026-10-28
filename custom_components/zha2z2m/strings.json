@@ -1,0 +1,155 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ZHA → Zigbee2MQTT Migration",
+        "description": "This helper guides you from ZHA to Zigbee2MQTT without breaking dashboards, automations and scripts.\n\n1. **Export** all ZHA devices and entities to a file\n2. **Disable ZHA** and set up Zigbee2MQTT\n3. Pair your devices in Zigbee2MQTT and **migrate** them one by one – entity ids, names, areas and labels are taken over\n4. **Check references** to old device ids\n\nAfter setup open **Configure** on this integration to start."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "The migration helper is already set up."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Migration wizard",
+        "description": "Export: {exported_at} · exported devices: {exported} · migrated: {migrated} · ready to migrate: {ready} · ZHA is {zha_state}",
+        "menu_options": {
+          "export": "1. Export ZHA devices and entities",
+          "disable_zha": "2. Disable ZHA",
+          "migrate": "3. Migrate a device",
+          "auto_migrate": "3b. Migrate all devices with matching IEEE address",
+          "references": "4. Check / fix device references",
+          "enable_zha": "Rollback: enable ZHA again"
+        }
+      },
+      "export": {
+        "title": "Export ZHA",
+        "description": "Saves all ZHA devices and entities (names, entity ids, areas, labels, icons, aliases, current states) to `/config/zha2z2m/`. If ZHA is running, the Zigbee network settings are exported too, so Zigbee2MQTT can take over the existing network.\n\nRun the export **before** disabling ZHA. Running it again later replaces the snapshot."
+      },
+      "disable_zha": {
+        "title": "Disable ZHA",
+        "description": "ZHA and Zigbee2MQTT cannot use the same coordinator at the same time.\n\n**Your coordinator:** `{port}` (ZHA radio `{radio}` → Zigbee2MQTT `adapter: {adapter}`)\n\nAfter disabling ZHA ({entries} entry/entries):\n1. Install the Mosquitto broker and the Zigbee2MQTT add-on\n2. Configure Zigbee2MQTT with the port and adapter shown above (optionally with `z2m_configuration_snippet.yaml` from `/config/zha2z2m/`)\n3. Start pairing your devices\n\nZHA's entities stay in place (disabled) until they are migrated.",
+        "data": {
+          "confirm": "Yes, disable ZHA now"
+        }
+      },
+      "enable_zha": {
+        "title": "Enable ZHA again",
+        "description": "Stop Zigbee2MQTT first! Devices that were already migrated keep their Zigbee2MQTT entities; ZHA will create new entities for them.",
+        "data": {
+          "confirm": "Yes, enable ZHA again"
+        }
+      },
+      "migrate": {
+        "title": "Migrate a device – new Zigbee2MQTT device",
+        "description": "Choose the device you have just paired in Zigbee2MQTT. Devices marked with ✓ have the same IEEE address as a former ZHA device.",
+        "data": {
+          "z2m_device": "Zigbee2MQTT device"
+        }
+      },
+      "migrate_source": {
+        "title": "Migrate a device – former ZHA device",
+        "description": "Which ZHA device was **{z2m_device}**?",
+        "data": {
+          "zha_device": "ZHA device",
+          "preserve_names": "Take over device name and exact entity names",
+          "copy_areas": "Take over areas and labels"
+        }
+      },
+      "migrate_entities": {
+        "title": "Migrate a device – entities",
+        "description": "**{zha_device}** → **{z2m_device}**\n\nFor every old ZHA entity (left) choose the Zigbee2MQTT entity that should take over its entity id. Suggestions are preselected. The old ZHA registry entry is removed; its history stays under the same entity id."
+      },
+      "auto_migrate": {
+        "title": "Migrate all matching devices",
+        "description": "These devices were found in Zigbee2MQTT with the same IEEE address as in ZHA. They are migrated with the suggested entity mapping:\n\n{devices}",
+        "data": {
+          "preserve_names": "Take over device name and exact entity names",
+          "copy_areas": "Take over areas and labels"
+        }
+      },
+      "references": {
+        "title": "Device references",
+        "description": "Entity ids were taken over, so everything that uses entities keeps working. Things that use a **device id** (device triggers/actions, `target: device_id`) still point to the old ZHA device:\n\n{report}\n\nReplacing rewrites the old device ids in `automations.yaml`, `scripts.yaml` and `scenes.yaml` (a backup is created) and reloads them. `domain: zha` device triggers and `zha_event` triggers must be rebuilt by hand (e.g. with the Zigbee2MQTT `action` sensor/event).",
+        "data": {
+          "replace_yaml": "Replace old device ids in the YAML files"
+        }
+      },
+      "done": {
+        "title": "Done",
+        "description": "{result}"
+      }
+    },
+    "error": {
+      "no_zha": "ZHA is not set up.",
+      "no_zha_devices": "ZHA has no devices.",
+      "zha_active": "ZHA is still active. Disable it first.",
+      "duplicate_target": "A Zigbee2MQTT entity was selected more than once.",
+      "unknown_zha_device": "The ZHA device is not part of the export.",
+      "unknown_z2m_device": "The Zigbee2MQTT device was not found."
+    },
+    "abort": {
+      "export_first": "Export ZHA first (step 1).",
+      "zha_active": "ZHA is still active. Disable it first (step 2).",
+      "no_z2m_devices": "No (unmigrated) Zigbee2MQTT devices found. Pair a device in Zigbee2MQTT first.",
+      "nothing_pending": "All exported ZHA devices have been migrated already.",
+      "no_entities": "The ZHA device has no entities.",
+      "no_auto_candidates": "No Zigbee2MQTT device with a matching IEEE address is waiting for migration.",
+      "nothing_migrated": "No device has been migrated yet."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "pending_devices": {
+        "name": "Pending devices"
+      }
+    }
+  },
+  "exceptions": {
+    "no_zha": { "message": "ZHA is not set up." },
+    "no_zha_devices": { "message": "ZHA has no devices." },
+    "export_first": { "message": "Export ZHA first." },
+    "zha_active": { "message": "ZHA is still active. Disable it first." },
+    "duplicate_target": { "message": "A Zigbee2MQTT entity was selected more than once." },
+    "unknown_zha_device": { "message": "The ZHA device is not part of the export." },
+    "unknown_z2m_device": { "message": "The Zigbee2MQTT device was not found." }
+  },
+  "services": {
+    "export": {
+      "name": "Export ZHA",
+      "description": "Saves all ZHA devices and entities to /config/zha2z2m/."
+    },
+    "disable_zha": {
+      "name": "Disable ZHA",
+      "description": "Disables all ZHA config entries (requires an export)."
+    },
+    "enable_zha": {
+      "name": "Enable ZHA",
+      "description": "Enables all ZHA config entries again (rollback)."
+    },
+    "migrate_device": {
+      "name": "Migrate device",
+      "description": "Takes over entity ids, names, areas and labels from a ZHA device to a Zigbee2MQTT device using the suggested entity mapping.",
+      "fields": {
+        "z2m_device_id": { "name": "Zigbee2MQTT device", "description": "The new device." },
+        "zha_ieee": { "name": "ZHA IEEE address", "description": "IEEE address of the former ZHA device. Defaults to the IEEE address of the Zigbee2MQTT device." },
+        "preserve_names": { "name": "Preserve names", "description": "Take over the device name and exact entity names." },
+        "copy_areas": { "name": "Copy areas", "description": "Take over areas and labels." }
+      }
+    },
+    "auto_migrate": {
+      "name": "Auto migrate",
+      "description": "Migrates every Zigbee2MQTT device whose IEEE address matches an exported ZHA device.",
+      "fields": {
+        "preserve_names": { "name": "Preserve names", "description": "Take over the device name and exact entity names." },
+        "copy_areas": { "name": "Copy areas", "description": "Take over areas and labels." }
+      }
+    },
+    "replace_device_references": {
+      "name": "Replace device references",
+      "description": "Replaces old ZHA device ids with the new ones in automations.yaml, scripts.yaml and scenes.yaml (with backup)."
+    }
+  }
+}
