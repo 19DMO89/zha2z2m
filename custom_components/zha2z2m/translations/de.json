@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "ZHA → Zigbee2MQTT Migration",
-        "description": "Dieser Helfer begleitet dich von ZHA zu Zigbee2MQTT, ohne dass Dashboards, Automationen und Skripte kaputtgehen.\n\n1. Alle ZHA-Geräte und -Entitäten in eine Datei **exportieren**\n2. **ZHA deaktivieren** und Zigbee2MQTT einrichten\n3. Geräte in Zigbee2MQTT anlernen und einzeln **migrieren** – Entitäts-IDs, Namen, Bereiche und Labels werden übernommen\n4. **Verweise** auf alte Geräte-IDs prüfen\n\nNach der Einrichtung bei dieser Integration auf **Konfigurieren** klicken."
+        "description": "Dieser Helfer begleitet dich von ZHA zu Zigbee2MQTT, ohne dass Dashboards, Automationen und Skripte kaputtgehen.\n\n1. Alle ZHA-Geräte und -Entitäten in eine Datei **exportieren**\n2. **ZHA deaktivieren** und Zigbee2MQTT einrichten\n3. Geräte in Zigbee2MQTT anlernen und einzeln **migrieren** – Entitäts-IDs, Namen, Bereiche und Labels werden übernommen\n4. **Verweise** auf alte Geräte-IDs prüfen\n\nNach der Einrichtung findest du den Helfer als **ZHA → Z2M** in der Seitenleiste (oder über **Konfigurieren** bei dieser Integration)."
       }
     },
     "abort": {
@@ -21,7 +21,8 @@
           "migrate": "3. Ein Gerät migrieren",
           "auto_migrate": "3b. Alle Geräte mit passender IEEE-Adresse migrieren",
           "references": "4. Geräte-Verweise prüfen / korrigieren",
-          "enable_zha": "Zurück: ZHA wieder aktivieren"
+          "enable_zha": "Zurück: ZHA wieder aktivieren",
+          "settings": "Einstellungen (Seitenleiste)"
         }
       },
       "export": {
@@ -80,6 +81,13 @@
       "done": {
         "title": "Fertig",
         "description": "{result}"
+      },
+      "settings": {
+        "title": "Einstellungen",
+        "description": "Der Migrationshelfer hat eine eigene Seite in der Seitenleiste (**ZHA → Z2M**, nur für Admins).",
+        "data": {
+          "show_in_sidebar": "In der Seitenleiste anzeigen"
+        }
       }
     },
     "error": {
@@ -108,13 +116,27 @@
     }
   },
   "exceptions": {
-    "no_zha": { "message": "ZHA ist nicht eingerichtet." },
-    "no_zha_devices": { "message": "ZHA hat keine Geräte." },
-    "export_first": { "message": "Bitte zuerst ZHA exportieren." },
-    "zha_active": { "message": "ZHA ist noch aktiv. Bitte zuerst deaktivieren." },
-    "duplicate_target": { "message": "Eine Zigbee2MQTT-Entität wurde mehrfach ausgewählt." },
-    "unknown_zha_device": { "message": "Das ZHA-Gerät ist nicht im Export enthalten." },
-    "unknown_z2m_device": { "message": "Das Zigbee2MQTT-Gerät wurde nicht gefunden." }
+    "no_zha": {
+      "message": "ZHA ist nicht eingerichtet."
+    },
+    "no_zha_devices": {
+      "message": "ZHA hat keine Geräte."
+    },
+    "export_first": {
+      "message": "Bitte zuerst ZHA exportieren."
+    },
+    "zha_active": {
+      "message": "ZHA ist noch aktiv. Bitte zuerst deaktivieren."
+    },
+    "duplicate_target": {
+      "message": "Eine Zigbee2MQTT-Entität wurde mehrfach ausgewählt."
+    },
+    "unknown_zha_device": {
+      "message": "Das ZHA-Gerät ist nicht im Export enthalten."
+    },
+    "unknown_z2m_device": {
+      "message": "Das Zigbee2MQTT-Gerät wurde nicht gefunden."
+    }
   },
   "services": {
     "export": {
@@ -133,18 +155,36 @@
       "name": "Gerät migrieren",
       "description": "Übernimmt Entitäts-IDs, Namen, Bereiche und Labels von einem ZHA-Gerät auf ein Zigbee2MQTT-Gerät mit der vorgeschlagenen Entitätszuordnung.",
       "fields": {
-        "z2m_device_id": { "name": "Zigbee2MQTT-Gerät", "description": "Das neue Gerät." },
-        "zha_ieee": { "name": "ZHA-IEEE-Adresse", "description": "IEEE-Adresse des früheren ZHA-Geräts. Standard: IEEE-Adresse des Zigbee2MQTT-Geräts." },
-        "preserve_names": { "name": "Namen übernehmen", "description": "Gerätename und exakte Entitätsnamen übernehmen." },
-        "copy_areas": { "name": "Bereiche übernehmen", "description": "Bereiche und Labels übernehmen." }
+        "z2m_device_id": {
+          "name": "Zigbee2MQTT-Gerät",
+          "description": "Das neue Gerät."
+        },
+        "zha_ieee": {
+          "name": "ZHA-IEEE-Adresse",
+          "description": "IEEE-Adresse des früheren ZHA-Geräts. Standard: IEEE-Adresse des Zigbee2MQTT-Geräts."
+        },
+        "preserve_names": {
+          "name": "Namen übernehmen",
+          "description": "Gerätename und exakte Entitätsnamen übernehmen."
+        },
+        "copy_areas": {
+          "name": "Bereiche übernehmen",
+          "description": "Bereiche und Labels übernehmen."
+        }
       }
     },
     "auto_migrate": {
       "name": "Automatisch migrieren",
       "description": "Migriert jedes Zigbee2MQTT-Gerät, dessen IEEE-Adresse zu einem exportierten ZHA-Gerät passt.",
       "fields": {
-        "preserve_names": { "name": "Namen übernehmen", "description": "Gerätename und exakte Entitätsnamen übernehmen." },
-        "copy_areas": { "name": "Bereiche übernehmen", "description": "Bereiche und Labels übernehmen." }
+        "preserve_names": {
+          "name": "Namen übernehmen",
+          "description": "Gerätename und exakte Entitätsnamen übernehmen."
+        },
+        "copy_areas": {
+          "name": "Bereiche übernehmen",
+          "description": "Bereiche und Labels übernehmen."
+        }
       }
     },
     "replace_device_references": {

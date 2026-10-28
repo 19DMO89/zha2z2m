@@ -19,6 +19,12 @@ Home-Assistant-Integration, die beim Umstieg von **ZHA** auf **Zigbee2MQTT** hil
    - **Verlauf/Statistiken** bleiben unter derselben Entitäts-ID erhalten
 4. **Verweise prüfen** – Automationen/Skripte, die eine **Geräte-ID** verwenden, werden aufgelistet. Optional werden alte Geräte-IDs in `automations.yaml`, `scripts.yaml` und `scenes.yaml` ersetzt (mit Backup). `domain: zha`-Geräteauslöser und `zha_event`-Auslöser werden markiert – diese müssen neu gebaut werden (z. B. mit dem `action`-Sensor/-Event von Zigbee2MQTT).
 
+### Eigene Seite in der Seitenleiste
+
+Nach der Einrichtung erscheint links in der Seitenleiste automatisch **„ZHA → Z2M“** (nur für Administratoren). Dort läuft die komplette Migration grafisch: Fortschritt, Export, ZHA aus/ein, neue Zigbee2MQTT-Geräte mit Auswahl „War in ZHA“, Entitäts-Zuordnung, „Alle mit gleicher IEEE migrieren“ und die Verweis-Prüfung.
+
+Abschalten: *Integration → Konfigurieren → Einstellungen → „In der Seitenleiste anzeigen“*. Alles geht alternativ auch über den Assistenten unter **Konfigurieren**.
+
 Zusätzlich gibt es den Sensor **„Ausstehende Geräte“** mit der Liste aller noch nicht migrierten Geräte – praktisch als Checkliste auf einem Dashboard.
 
 ## Installation
@@ -35,7 +41,7 @@ Ordner `custom_components/zha2z2m` nach `/config/custom_components/` kopieren un
 
 > **Vorher ein vollständiges Home-Assistant-Backup erstellen!**
 
-1. Integration öffnen → **Konfigurieren** → **1. Exportieren** (solange ZHA noch läuft)
+1. Seite **ZHA → Z2M** in der Seitenleiste öffnen (oder Integration → **Konfigurieren**) → **Exportieren** (solange ZHA noch läuft)
 2. **2. ZHA deaktivieren**
 3. Mosquitto + Zigbee2MQTT installieren und mit dem angezeigten Port/Adapter konfigurieren
 4. Geräte in Zigbee2MQTT anlernen
@@ -71,7 +77,21 @@ Alle Dienste liefern eine Antwort (Response) mit Details.
 
 ## English
 
-A Home Assistant custom integration (HACS) that helps you move from ZHA to Zigbee2MQTT: it exports all ZHA devices/entities to a file, disables ZHA, and when you pair devices in Zigbee2MQTT it lets you pick which ZHA device each one was. The new entities then take over the old **entity ids**, names, areas, labels, icons, aliases and history, so dashboards, automations and scripts keep working. Remaining device-id references can be listed and replaced. Use **Configure** on the integration to open the wizard.
+A Home Assistant custom integration (HACS) that helps you move from ZHA to Zigbee2MQTT: it exports all ZHA devices/entities to a file, disables ZHA, and when you pair devices in Zigbee2MQTT it lets you pick which ZHA device each one was. The new entities then take over the old **entity ids**, names, areas, labels, icons, aliases and history, so dashboards, automations and scripts keep working. Remaining device-id references can be listed and replaced. After setup a **ZHA → Z2M** page appears in the sidebar (admins only, can be turned off in the integration settings); the same steps are also available via **Configure**.
+
+## Versionierung
+
+Das Projekt nutzt [Semantic Versioning](https://semver.org/lang/de/); Änderungen stehen im [CHANGELOG](CHANGELOG.md). HACS zeigt neue GitHub-Releases automatisch als Update an.
+
+Neue Version veröffentlichen:
+
+```bash
+python scripts/bump_version.py 0.2.0      # manifest.json + const.py
+# CHANGELOG.md ergänzen, committen, pushen
+gh release create v0.2.0 --generate-notes
+```
+
+Der Release-Workflow prüft, dass Tag, `manifest.json` und `const.py` dieselbe Version haben.
 
 ## Lizenz
 MIT

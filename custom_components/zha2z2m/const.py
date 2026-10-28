@@ -6,6 +6,16 @@ import re
 
 DOMAIN = "zha2z2m"
 
+# Keep in sync with manifest.json (checked by the release workflow).
+VERSION = "0.1.0"
+
+PANEL_URL_PATH = DOMAIN
+PANEL_STATIC_URL = f"/{DOMAIN}_static"
+PANEL_ELEMENT = "zha2z2m-panel"
+PANEL_TITLE = "ZHA → Z2M"
+PANEL_ICON = "mdi:swap-horizontal-bold"
+CONF_SHOW_IN_SIDEBAR = "show_in_sidebar"
+
 STORAGE_KEY = DOMAIN
 STORAGE_VERSION = 1
 

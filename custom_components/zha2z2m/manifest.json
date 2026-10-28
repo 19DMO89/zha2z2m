@@ -1,9 +1,22 @@
 {
   "domain": "zha2z2m",
   "name": "ZHA → Zigbee2MQTT Migration",
-  "after_dependencies": ["zha", "mqtt", "automation", "script"],
-  "codeowners": ["@19DMO89"],
+  "after_dependencies": [
+    "zha",
+    "mqtt",
+    "automation",
+    "script"
+  ],
+  "codeowners": [
+    "@19DMO89"
+  ],
   "config_flow": true,
+  "dependencies": [
+    "frontend",
+    "http",
+    "panel_custom",
+    "websocket_api"
+  ],
   "documentation": "https://github.com/19DMO89/zha2z2m",
   "integration_type": "service",
   "iot_class": "calculated",

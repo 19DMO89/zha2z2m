@@ -38,8 +38,10 @@ from .migration import (
     device_display_name,
     z2m_ieee,
 )
+from .panel import async_remove_panel, async_update_panel
 from .references import async_replace_device_ids, migrated_device_ids, scan_files
 from .store import MigrationStore
+from .websocket import async_register as async_register_websocket
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -67,6 +69,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN] = store
 
     _async_register_services(hass, store)
+    if not hass.data.get(f"{DOMAIN}_ws_registered"):
+        async_register_websocket(hass)
+        hass.data[f"{DOMAIN}_ws_registered"] = True
+    await async_update_panel(hass, entry)
+    entry.async_on_unload(entry.add_update_listener(_async_options_updated))
 
     @callback
     def _device_created(event: Event) -> None:
@@ -97,9 +104,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
+async def _async_options_updated(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    await async_update_panel(hass, entry)
+
+
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unloaded:
+        async_remove_panel(hass)
         hass.data.pop(DOMAIN, None)
         for service in hass.services.async_services_for_domain(DOMAIN):
             hass.services.async_remove(DOMAIN, service)

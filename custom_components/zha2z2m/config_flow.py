@@ -28,6 +28,7 @@ from .const import (
     CONF_COPY_AREAS,
     CONF_PRESERVE_NAMES,
     CONF_REPLACE_YAML,
+    CONF_SHOW_IN_SIDEBAR,
     CONF_Z2M_DEVICE,
     CONF_ZHA_DEVICE,
     DOMAIN,
@@ -112,6 +113,7 @@ class MigrationWizard(OptionsFlow):
                 "auto_migrate",
                 "references",
                 "enable_zha",
+                "settings",
             ],
             description_placeholders={
                 "exported_at": store.data.get("exported_at") or "–",
@@ -187,6 +189,25 @@ class MigrationWizard(OptionsFlow):
             step_id="enable_zha",
             data_schema=vol.Schema(
                 {vol.Required(CONF_CONFIRM, default=False): BooleanSelector()}
+            ),
+        )
+
+    async def async_step_settings(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        if user_input is not None:
+            return self.async_create_entry(
+                data={**self.config_entry.options, **user_input}
+            )
+        return self.async_show_form(
+            step_id="settings",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(
+                        CONF_SHOW_IN_SIDEBAR,
+                        default=self.config_entry.options.get(CONF_SHOW_IN_SIDEBAR, True),
+                    ): BooleanSelector()
+                }
             ),
         )
 

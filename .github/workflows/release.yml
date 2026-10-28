@@ -1,0 +1,21 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tag must match manifest.json and const.py
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          MANIFEST=$(jq -r .version custom_components/zha2z2m/manifest.json)
+          CONST=$(sed -n 's/^VERSION = "\(.*\)"/\1/p' custom_components/zha2z2m/const.py)
+          echo "tag=$TAG manifest=$MANIFEST const=$CONST"
+          test "$TAG" = "$MANIFEST" && test "$TAG" = "$CONST"
